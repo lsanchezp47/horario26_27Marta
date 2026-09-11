@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Horario">
+<meta name="theme-color" content="#FBF9F4">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADuklEQVR4nO3cIXIVQRSGUUKxAwQSE5WIGBC4CAQiu6DQKASKQiFQaIpdIBAIHAJMRBaARLAHXAqRf2qmp/vOvHCOfv0e1fOlZ5JccnRyfH4HbnJ3638A+yUOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcRPe2+uDLq89bffQhOju9qP/Qo+L/mqCJlSorKYpDE90VVFLxzKGMEQp2dezJIYsC446QgSeHMmqM2+dRcSij0qDdHhKHMuqN2PP+cShjK913vnMcythW3/3343OinnE4Nvag41XoFocy9qPXtXBbIdrmt7Jvn/9Y9Po3nx7Pedmjd98Wve3P1+dzXvb92ftFb/vky6s5L3v68eWit/364sOi16/X5+RYdI4tLWPmkqVlzFyytIyZS5aWsXRJlztL9W2loYw5CxvKmLOwoYw5CxvKWLmwTWkczWVML28uY3p5cxnTy1de4Mo+OsTh+5R9Wn9dfLdCJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHESlccwc6Fq6fOZAV5KWzxzoStLylQNdlfNg1SdHcx/TC5v7mF7Y3Mf0wuYLXDwpuMFtpaGPOUsa+pizpKGPOUsaLnP9DGmHP8Fg2Ge3Vv51Bg+kROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDaIO/Jvjn96/6D70d7j94WPlx1SeHMtYo3r3SOJSxXuUeeuYgEgeROIhK4yh+2L6VKvew+uTQxxrFu7fBzzn0cSg8cxCJg0gcROIgEgeROIjEQWSe45CY5yAyz8EU8xzsgjiIxEFknuPAmOfgZuY52AvPHETiIBIHkTiIxEEkDiJxEJnnOCTmOYjMczDFPAe7IA4icRCZ5zgw5jm4mXkO9sIzB5E4iMRBJA4icRCJg0gcROY5Dol5DiLzHEwxz8EuiINIHETmOQ6MeQ5uZp6DvfDMQSQOInEQiYNIHETiIBIHkTiIxEEkDqIOcZydXqx/E7pbf12cHETiIOoThzvL3nS5Ik4OInEQdYvDnWU/el2LnieHPvag41VwWyHqHIfDY1t997//yaGPrXTf+SG3FX3UG7Hno5459FFp0G4PfCDVR41x+3x0cnw+6K2vXV59Hv0R/6fRX34V38o6QkYo2NWKk+NfTpGVKr/SquO4ppJFNjl9N4uD/fPjcyJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHER/AU0365bWmWO9AAAAAElFTkSuQmCC">
+<title>Mi Horario</title>
+<style>
+  :root{
+    --bg:#FBF9F4;
+    --card:#FFFFFF;
+    --ink:#26231C;
+    --ink-soft:#8A8375;
+    --border:#EAE4D6;
+    --border-soft:#F1ECE0;
+
+    --c-bach:#7C5CBF;      --t-bach:#F1ECFB;
+    --c-esob4:#2F80B4;     --t-esob4:#E9F2FA;
+    --c-esoa4:#C2417F;     --t-esoa4:#FBEAF3;
+    --c-esob3:#3F9463;     --t-esob3:#EAF6EF;
+    --c-guardia:#C99A2E;   --t-guardia:#FBF3E0;
+    --c-jefatura:#B23B32;  --t-jefatura:#FBEAE8;
+    --c-otros:#6B6F76;     --t-otros:#F0EFEC;
+    --c-libre:#C9C3B4;     --t-libre:#F7F5EF;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  #app{
+    max-width:560px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:calc(64px + env(safe-area-inset-bottom));
+  }
+
+  header.top{
+    padding:18px 20px 10px;
+  }
+  header.top h1{
+    margin:0;
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+  }
+  header.top p{
+    margin:4px 0 0;
+    color:var(--ink-soft);
+    font-size:14px;
+    text-transform:capitalize;
+  }
+
+  main{
+    flex:1;
+    padding:6px 20px 20px;
+  }
+
+  section.view{display:none;}
+  section.view.active{display:block; animation:fade .18s ease;}
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---- period cards (Hoy) ---- */
+  .period-card{
+    display:flex;
+    align-items:stretch;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    margin-bottom:10px;
+    overflow:hidden;
+  }
+  .period-card .bar{width:6px; flex-shrink:0;}
+  .period-card .body{
+    flex:1;
+    padding:12px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .period-card .time{
+    font-size:12px;
+    color:var(--ink-soft);
+    font-variant-numeric:tabular-nums;
+  }
+  .period-card .subject{
+    font-size:16px;
+    font-weight:700;
+  }
+  .period-card.now{
+    box-shadow:0 0 0 2px var(--now-color, #26231C);
+  }
+  .now-tag{
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.04em;
+    padding:2px 8px;
+    border-radius:100px;
+    color:#fff;
+    align-self:flex-start;
+    margin-top:4px;
+  }
+  .period-card.libre .subject{color:var(--ink-soft); font-weight:600;}
+  .break-row{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:.06em;
+    padding:6px 0 10px;
+  }
+
+  .weekend-msg{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--ink-soft);
+  }
+  .weekend-msg .big{font-size:40px; margin-bottom:10px;}
+
+  /* ---- day picker chips (Hoy) ---- */
+  .day-chips{
+    display:flex;
+    gap:6px;
+    margin-bottom:14px;
+    overflow-x:auto;
+  }
+  .day-chip{
+    flex:1;
+    text-align:center;
+    padding:8px 0;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:600;
+    background:var(--card);
+    border:1px solid var(--border);
+    color:var(--ink-soft);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .day-chip.active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+
+  /* ---- Semana grid ---- */
+  .grid-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  table.week{
+    border-collapse:collapse;
+    width:100%;
+    min-width:520px;
+    table-layout:fixed;
+  }
+  table.week th{
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    padding:6px 4px 10px;
+    text-align:center;
+  }
+  table.week th:first-child{width:64px;}
+  table.week td.time-cell{
+    font-size:10.5px;
+    color:var(--ink-soft);
+    vertical-align:middle;
+    text-align:right;
+    padding-right:6px;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+  }
+  table.week td.slot{
+    padding:3px;
+    vertical-align:middle;
+  }
+  .slot-inner{
+    border-radius:9px;
+    padding:7px 5px;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:11px;
+    font-weight:700;
+    line-height:1.2;
+  }
+  .slot-inner.empty{background:transparent; color:var(--border);}
+  tr.recreo-row td{padding:2px 3px;}
+  tr.recreo-row .slot-inner{min-height:16px; font-size:9px; font-weight:800; letter-spacing:.04em; opacity:.75;}
+
+  /* ---- legend ---- */
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 14px;
+    margin-top:16px;
+  }
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .legend-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+
+  /* ---- forms / cards generic ---- */
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:12px;
+  }
+  .card h3{margin:0 0 10px; font-size:14px; font-weight:800;}
+  label.field{display:block; margin-bottom:10px;}
+  label.field span{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-bottom:4px;
+  }
+  input, select, textarea{
+    width:100%;
+    font-family:inherit;
+    font-size:15px;
+    padding:9px 10px;
+    border-radius:9px;
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--ink);
+  }
+  textarea{resize:vertical; min-height:64px;}
+  input:focus, select:focus, textarea:focus{outline:2px solid #26231C33; border-color:#26231C55;}
+
+  button.primary{
+    width:100%;
+    padding:11px;
+    border:none;
+    border-radius:10px;
+    background:var(--ink);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  button.primary:active{opacity:.85;}
+
+  /* ---- exam list ---- */
+  .exam-item{
+    display:flex;
+    gap:12px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px 14px;
+    margin-bottom:9px;
+    align-items:center;
+  }
+  .exam-date{
+    width:48px;
+    flex-shrink:0;
+    text-align:center;
+    border-radius:10px;
+    padding:6px 0;
+  }
+  .exam-date .d{font-size:18px; font-weight:800; line-height:1;}
+  .exam-date .m{font-size:9px; text-transform:uppercase; font-weight:700; opacity:.8;}
+  .exam-info{flex:1; min-width:0;}
+  .exam-info .cls{font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em;}
+  .exam-info .topic{font-size:14.5px; font-weight:700; margin-top:1px;}
+  .exam-info .notes{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  .exam-info .wd{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+  .del-btn{
+    background:none; border:none; color:var(--ink-soft);
+    font-size:18px; padding:4px 6px; cursor:pointer; flex-shrink:0;
+  }
+  .exam-item.past{opacity:.45;}
+  .section-label{
+    font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--ink-soft); margin:18px 0 8px;
+  }
+  .section-label:first-child{margin-top:0;}
+  .empty-hint{
+    text-align:center; color:var(--ink-soft); font-size:13.5px; padding:20px 10px;
+  }
+
+  /* ---- planner ---- */
+  .planner-item{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .planner-item .head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .planner-item .dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .planner-item .subj{font-size:14.5px; font-weight:800;}
+  .planner-item .time{font-size:11.5px; color:var(--ink-soft); margin-left:auto;}
+  .save-flag{
+    font-size:11px; color:#3F9463; font-weight:700; opacity:0; transition:opacity .3s;
+  }
+  .save-flag.show{opacity:1;}
+
+  /* ---- bottom nav ---- */
+  nav.tabbar{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    background:rgba(251,249,244,.92);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-around;
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    max-width:560px;
+    margin:0 auto;
+  }
+  nav.tabbar button{
+    background:none; border:none;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    color:var(--ink-soft);
+    font-family:inherit;
+    font-size:10.5px;
+    font-weight:700;
+    padding:4px 8px;
+    cursor:pointer;
+  }
+  nav.tabbar button svg{width:22px; height:22px;}
+  nav.tabbar button.active{color:var(--ink);}
+  nav.tabbar button.active svg{stroke:var(--ink);}
+  nav.tabbar button svg{stroke:var(--ink-soft); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header class="top">
+    <h1 id="headerTitle">Mi horario</h1>
+    <p id="headerSub"></p>
+  </header>
+
+  <main>
+
+    <!-- HOY -->
+    <section class="view active" id="view-hoy">
+      <div class="day-chips" id="dayChips"></div>
+      <div id="hoyContent"></div>
+    </section>
+
+    <!-- SEMANA -->
+    <section class="view" id="view-semana">
+      <div class="grid-wrap">
+        <table class="week" id="weekTable"></table>
+      </div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <!-- EXAMENES -->
+    <section class="view" id="view-examenes">
+      <div class="card">
+        <h3>Añadir examen</h3>
+        <label class="field"><span>Fecha</span><input type="date" id="examDate"></label>
+        <label class="field"><span>Clase</span>
+          <select id="examClass"></select>
+        </label>
+        <label class="field"><span>Tema / título</span><input type="text" id="examTopic" placeholder="p. ej. Unit 4 vocabulary"></label>
+        <label class="field"><span>Notas (opcional)</span><textarea id="examNotes" placeholder="Detalles, contenidos a repasar..."></textarea></label>
+        <button class="primary" id="addExamBtn">Guardar examen</button>
+      </div>
+      <div id="examList"></div>
+    </section>
+
+    <!-- PLANNER -->
+    <section class="view" id="view-planner">
+      <div class="card" style="margin-bottom:16px;">
+        <label class="field" style="margin-bottom:0;"><span>Día</span><input type="date" id="plannerDate"></label>
+      </div>
+      <div id="plannerContent"></div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar">
+    <button data-view="hoy" class="active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Hoy
+    </button>
+    <button data-view="semana">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+      Semana
+    </button>
+    <button data-view="examenes">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/><path d="M9 15l2 2 4-4"/></svg>
+      Exámenes
+    </button>
+    <button data-view="planner">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5V5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5a2.5 2.5 0 0 0 0 5H20"/></svg>
+      Planner
+    </button>
+  </nav>
+
+</div>
+
+<script>
+/* ============ DATOS DEL HORARIO ============ */
+const TYPES = {
+  bach:     {label:'1º Bachillerato',      color:'var(--c-bach)',     tint:'var(--t-bach)'},
+  esob4:    {label:'4º ESO B',             color:'var(--c-esob4)',    tint:'var(--t-esob4)'},
+  esoa4:    {label:'4º ESO A',             color:'var(--c-esoa4)',    tint:'var(--t-esoa4)'},
+  esob3:    {label:'3º ESO B',             color:'var(--c-esob3)',    tint:'var(--t-esob3)'},
+  guardia:  {label:'Guardia',              color:'var(--c-guardia)',  tint:'var(--t-guardia)'},
+  jefatura: {label:'Jefatura / reuniones', color:'var(--c-jefatura)', tint:'var(--t-jefatura)'},
+  otros:    {label:'Otras tareas',         color:'var(--c-otros)',    tint:'var(--t-otros)'},
+};
+
+const PERIODS = [
+  {n:1, start:'08:30', end:'09:25'},
+  {n:2, start:'09:25', end:'10:20'},
+  {n:3, start:'10:20', end:'11:15'},
+  {n:'recreo', start:'11:15', end:'11:45', isBreak:true},
+  {n:4, start:'11:45', end:'12:40'},
+  {n:5, start:'12:40', end:'13:35'},
+  {n:6, start:'13:35', end:'14:30'},
+];
+
+const DAYS = ['lunes','martes','miercoles','jueves','viernes'];
+const DAY_LABELS = {lunes:'Lunes', martes:'Martes', miercoles:'Miércoles', jueves:'Jueves', viernes:'Viernes'};
+const DAY_LABELS_SHORT = {lunes:'L', martes:'M', miercoles:'X', jueves:'J', viernes:'V'};
+
+const SCHEDULE = {
+  lunes: {
+    1:{subject:'1º Bach', type:'bach'},
+    2:{subject:'3º ESO B', type:'esob3'},
+    3:{subject:'Atención a familias', type:'otros'},
+    4:{subject:'Guardia', type:'guardia'},
+    5:{subject:'4º ESO B', type:'esob4'},
+    6:{subject:'4º ESO A', type:'esoa4'},
+  },
+  martes: {
+    1:{subject:'4º ESO B', type:'esob4'},
+    2:{subject:'Guardia', type:'guardia'},
+    3:{subject:'4º ESO A', type:'esoa4'},
+    4:{subject:'3º ESO B', type:'esob3'},
+    5:null,
+    6:{subject:'CCP', type:'otros'},
+  },
+  miercoles: {
+    1:{subject:'4º ESO A', type:'esoa4'},
+    2:{subject:'3º ESO B', type:'esob3'},
+    3:{subject:'Tutoría 1º Bach', type:'otros'},
+    4:{subject:'Jefatura de Dpto.', type:'jefatura'},
+    5:null,
+    6:null,
+  },
+  jueves: {
+    1:{subject:'1º Bach', type:'bach'},
+    2:{subject:'OFPGA', type:'otros'},
+    3:{subject:'4º ESO B', type:'esob4'},
+    4:{subject:'Jefatura de Dpto.', type:'jefatura'},
+    5:null,
+    6:null,
+  },
+  viernes: {
+    1:{subject:'Reunión de Dpto.', type:'jefatura'},
+    2:{subject:'4º ESO A', type:'esoa4'},
+    3:null,
+    recreo:{subject:'Guardia de recreo', type:'guardia'},
+    4:{subject:'4º ESO B', type:'esob4'},
+    5:{subject:'Aula de convivencia', type:'otros'},
+    6:{subject:'1º Bach', type:'bach'},
+  },
+};
+
+const EXAM_CLASSES = ['1º Bachillerato','4º ESO A','4º ESO B','3º ESO B','Otro'];
+
+/* ============ ESTADO / PERSISTENCIA ============ */
+const store = {
+  get(key, fallback){
+    try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch(e){ return fallback; }
+  },
+  set(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+};
+
+let exams = store.get('horario_exams_v1', []);
+let plannerData = store.get('horario_planner_v1', {});
+
+/* ============ HELPERS DE FECHA ============ */
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function toISO(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function fromISO(s){ const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+function weekdayKey(date){
+  const map = {1:'lunes',2:'martes',3:'miercoles',4:'jueves',5:'viernes'};
+  return map[date.getDay()] || null;
+}
+function nowHM(){ const d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MONTHS_SHORT = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+const WEEKDAYS_FULL = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+/* ============ NAV ============ */
+const views = document.querySelectorAll('.view');
+const navButtons = document.querySelectorAll('nav.tabbar button');
+navButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=> switchView(btn.dataset.view));
+});
+function switchView(name){
+  views.forEach(v=> v.classList.toggle('active', v.id === 'view-'+name));
+  navButtons.forEach(b=> b.classList.toggle('active', b.dataset.view===name));
+  const titles = {hoy:['Mi horario','Vista del día'], semana:['Semana','Todas las clases'], examenes:['Exámenes','Calendario de pruebas'], planner:['Planner','Qué he dado en cada clase']};
+  document.getElementById('headerTitle').textContent = titles[name][0];
+  if(name==='hoy') renderHoy();
+}
+
+/* ============ VISTA HOY ============ */
+let selectedDayKey = weekdayKey(new Date()) || 'lunes';
+
+function renderDayChips(){
+  const wrap = document.getElementById('dayChips');
+  wrap.innerHTML = '';
+  DAYS.forEach(dk=>{
+    const chip = document.createElement('div');
+    chip.className = 'day-chip' + (dk===selectedDayKey ? ' active' : '');
+    chip.textContent = DAY_LABELS[dk];
+    chip.addEventListener('click', ()=>{ selectedDayKey = dk; renderHoy(); });
+    wrap.appendChild(chip);
+  });
+}
+
+function renderHoy(){
+  renderDayChips();
+  const today = new Date();
+  const todayKey = weekdayKey(today);
+  const isToday = selectedDayKey === todayKey;
+
+  const sub = document.getElementById('headerSub');
+  if(isToday){
+    sub.textContent = WEEKDAYS_FULL[today.getDay()] + ', ' + today.getDate() + ' de ' + MONTHS[today.getMonth()];
+  } else {
+    sub.textContent = DAY_LABELS[selectedDayKey];
+  }
+
+  const content = document.getElementById('hoyContent');
+  content.innerHTML = '';
+
+  const daySchedule = SCHEDULE[selectedDayKey];
+  const nowStr = nowHM();
+
+  PERIODS.forEach(p=>{
+    const entry = daySchedule[p.n];
+    if(p.isBreak){
+      if(entry){
+        content.appendChild(periodCard(p, entry, isToday, nowStr));
+      } else {
+        const div = document.createElement('div');
+        div.className = 'break-row';
+        div.textContent = 'RECREO · ' + p.start + '–' + p.end;
+        content.appendChild(div);
+      }
+      return;
+    }
+    content.appendChild(periodCard(p, entry, isToday, nowStr));
+  });
+}
+
+function periodCard(p, entry, isToday, nowStr){
+  const card = document.createElement('div');
+  const isNow = isToday && nowStr >= p.start && nowStr < p.end;
+  const type = entry ? TYPES[entry.type] : null;
+
+  card.className = 'period-card' + (isNow ? ' now' : '') + (!entry ? ' libre' : '');
+  if(isNow) card.style.boxShadow = '0 0 0 2px ' + (type ? type.color : '#8A8375');
+
+  const bar = document.createElement('div');
+  bar.className = 'bar';
+  bar.style.background = entry ? type.color : 'var(--c-libre)';
+  card.appendChild(bar);
+
+  const body = document.createElement('div');
+  body.className = 'body';
+  body.style.background = entry ? type.tint : 'var(--t-libre)';
+
+  const time = document.createElement('div');
+  time.className = 'time';
+  time.textContent = p.start + ' – ' + p.end;
+  body.appendChild(time);
+
+  const subj = document.createElement('div');
+  subj.className = 'subject';
+  subj.textContent = entry ? entry.subject : 'Libre';
+  body.appendChild(subj);
+
+  if(isNow){
+    const tag = document.createElement('div');
+    tag.className = 'now-tag';
+    tag.textContent = 'AHORA';
+    tag.style.background = entry ? type.color : '#8A8375';
+    body.appendChild(tag);
+  }
+
+  card.appendChild(body);
+  return card;
+}
+
+/* ============ VISTA SEMANA ============ */
+function renderSemana(){
+  const table = document.getElementById('weekTable');
+  let html = '<thead><tr><th></th>';
+  DAYS.forEach(dk=> html += '<th>'+DAY_LABELS[dk]+'</th>');
+  html += '</tr></thead><tbody>';
+
+  PERIODS.forEach(p=>{
+    if(p.isBreak){
+      html += '<tr class="recreo-row"><td class="time-cell"></td>';
+      DAYS.forEach(dk=>{
+        const entry = SCHEDULE[dk][p.n];
+        if(entry){
+          const type = TYPES[entry.type];
+          html += '<td class="slot"><div class="slot-inner" style="background:'+type.tint+';color:'+type.color+';">'+shortLabel(entry.subject)+'</div></td>';
+        } else {
+          html += '<td class="slot"><div class="slot-inner empty">recreo</div></td>';
+        }
+      });
+      html += '</tr>';
+      return;
+    }
+    html += '<tr><td class="time-cell">'+p.start+'<br>'+p.end+'</td>';
+    DAYS.forEach(dk=>{
+      const entry = SCHEDULE[dk][p.n];
+      if(entry){
+        const type = TYPES[entry.type];
+        html += '<td class="slot"><div class="slot-inner" style="background:'+type.tint+';color:'+type.color+';">'+shortLabel(entry.subject)+'</div></td>';
+      } else {
+        html += '<td class="slot"><div class="slot-inner empty">—</div></td>';
+      }
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody>';
+  table.innerHTML = html;
+
+  const legend = document.getElementById('legend');
+  legend.innerHTML = '';
+  Object.values(TYPES).forEach(t=>{
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = '<span class="legend-dot" style="background:'+t.color+';"></span>'+t.label;
+    legend.appendChild(item);
+  });
+}
+
+function shortLabel(s){
+  return s
+    .replace('º Bachillerato','º Bach')
+    .replace('Jefatura de Dpto.','Jefatura')
+    .replace('Reunión de Dpto.','Reunión')
+    .replace('Atención a familias','At. familias')
+    .replace('Aula de convivencia','Aula conv.')
+    .replace('Guardia de recreo','Guardia');
+}
+
+/* ============ VISTA EXÁMENES ============ */
+function initExamForm(){
+  const sel = document.getElementById('examClass');
+  sel.innerHTML = EXAM_CLASSES.map(c=>'<option value="'+c+'">'+c+'</option>').join('');
+  document.getElementById('examDate').value = toISO(new Date());
+
+  document.getElementById('addExamBtn').addEventListener('click', ()=>{
+    const date = document.getElementById('examDate').value;
+    const cls = document.getElementById('examClass').value;
+    const topic = document.getElementById('examTopic').value.trim();
+    const notes = document.getElementById('examNotes').value.trim();
+    if(!date || !topic){
+      alert('Ponle al menos fecha y tema al examen.');
+      return;
+    }
+    exams.push({id: Date.now(), date, cls, topic, notes});
+    store.set('horario_exams_v1', exams);
+    document.getElementById('examTopic').value = '';
+    document.getElementById('examNotes').value = '';
+    renderExams();
+  });
+}
+
+function renderExams(){
+  const list = document.getElementById('examList');
+  list.innerHTML = '';
+  if(exams.length === 0){
+    list.innerHTML = '<div class="empty-hint">Todavía no has apuntado ningún examen.</div>';
+    return;
+  }
+  const todayISO = toISO(new Date());
+  const sorted = [...exams].sort((a,b)=> a.date.localeCompare(b.date));
+  const upcoming = sorted.filter(e=> e.date >= todayISO);
+  const past = sorted.filter(e=> e.date < todayISO).reverse();
+
+  if(upcoming.length){
+    list.appendChild(sectionLabel('Próximos'));
+    upcoming.forEach(e=> list.appendChild(examItem(e, false)));
+  }
+  if(past.length){
+    list.appendChild(sectionLabel('Pasados'));
+    past.forEach(e=> list.appendChild(examItem(e, true)));
+  }
+  if(!upcoming.length && !past.length){
+    list.innerHTML = '<div class="empty-hint">Todavía no has apuntado ningún examen.</div>';
+  }
+}
+
+function sectionLabel(text){
+  const div = document.createElement('div');
+  div.className = 'section-label';
+  div.textContent = text;
+  return div;
+}
+
+function examItem(e, isPast){
+  const d = fromISO(e.date);
+  const item = document.createElement('div');
+  item.className = 'exam-item' + (isPast ? ' past' : '');
+
+  const dateBox = document.createElement('div');
+  dateBox.className = 'exam-date';
+  dateBox.style.background = 'var(--t-jefatura)';
+  dateBox.innerHTML = '<div class="d" style="color:var(--c-jefatura)">'+d.getDate()+'</div><div class="m" style="color:var(--c-jefatura)">'+MONTHS_SHORT[d.getMonth()]+'</div>';
+
+  const info = document.createElement('div');
+  info.className = 'exam-info';
+  info.innerHTML =
+    '<div class="cls" style="color:var(--c-jefatura)">'+e.cls+'</div>'+
+    '<div class="topic">'+escapeHtml(e.topic)+'</div>'+
+    (e.notes ? '<div class="notes">'+escapeHtml(e.notes)+'</div>' : '') +
+    '<div class="wd">'+capitalize(WEEKDAYS_FULL[d.getDay()])+'</div>';
+
+  const del = document.createElement('button');
+  del.className = 'del-btn';
+  del.innerHTML = '✕';
+  del.addEventListener('click', ()=>{
+    exams = exams.filter(x=> x.id !== e.id);
+    store.set('horario_exams_v1', exams);
+    renderExams();
+  });
+
+  item.appendChild(dateBox);
+  item.appendChild(info);
+  item.appendChild(del);
+  return item;
+}
+
+function escapeHtml(s){
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+/* ============ VISTA PLANNER ============ */
+function initPlanner(){
+  const dateInput = document.getElementById('plannerDate');
+  dateInput.value = toISO(new Date());
+  dateInput.addEventListener('change', renderPlanner);
+}
+
+function renderPlanner(){
+  const dateVal = document.getElementById('plannerDate').value;
+  const content = document.getElementById('plannerContent');
+  content.innerHTML = '';
+  if(!dateVal){ return; }
+
+  const d = fromISO(dateVal);
+  const dk = weekdayKey(d);
+
+  if(!dk){
+    content.innerHTML = '<div class="empty-hint">Ese día es fin de semana — no hay clases que registrar.</div>';
+    return;
+  }
+
+  const daySchedule = SCHEDULE[dk];
+  let any = false;
+
+  PERIODS.forEach(p=>{
+    if(p.isBreak) return;
+    const entry = daySchedule[p.n];
+    if(!entry) return;
+    any = true;
+    const type = TYPES[entry.type];
+    const key = dateVal + '_' + p.n;
+
+    const item = document.createElement('div');
+    item.className = 'planner-item';
+
+    const head = document.createElement('div');
+    head.className = 'head';
+    head.innerHTML =
+      '<span class="dot" style="background:'+type.color+'"></span>'+
+      '<span class="subj">'+entry.subject+'</span>'+
+      '<span class="time">'+p.start+'–'+p.end+'</span>';
+    item.appendChild(head);
+
+    const ta = document.createElement('textarea');
+    ta.placeholder = 'Qué has dado en esta clase...';
+    ta.value = plannerData[key] || '';
+    const flag = document.createElement('div');
+    flag.className = 'save-flag';
+    flag.textContent = 'Guardado ✓';
+
+    let timeout;
+    ta.addEventListener('input', ()=>{
+      clearTimeout(timeout);
+      timeout = setTimeout(()=>{
+        plannerData[key] = ta.value;
+        store.set('horario_planner_v1', plannerData);
+        flag.classList.add('show');
+        setTimeout(()=> flag.classList.remove('show'), 1200);
+      }, 500);
+    });
+
+    item.appendChild(ta);
+    item.appendChild(flag);
+    content.appendChild(item);
+  });
+
+  if(!any){
+    content.innerHTML = '<div class="empty-hint">No hay clases programadas ese día.</div>';
+  }
+}
+
+/* ============ INIT ============ */
+renderSemana();
+initExamForm();
+renderExams();
+initPlanner();
+renderPlanner();
+renderHoy();
+</script>
+</body>
+</html>
